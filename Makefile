@@ -10,59 +10,57 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME_1 = checker
+CHECK_NAME = checker
+PUSH_NAME = push_swap
+FLAGS = -Wall -Wextra -Werror
+INC = -Iincludes/ -I$(LIB_DIR)/includes
 
-NAME_2 = push_swap
+CHECK_SRC_NAME = checker.c stack_creator.c quick_sort.c commands.c\
+commands_2.c printer.c comb.c comb_2.c divide_stacks.c helpers.c\
+push_back.c swap_elements.c swappers.c error_check.c printer_helper.c
 
-SRCS_1 = checker.c
+CHECK_OBJ_NAME = $(CHECK_SRC_NAME:.c=.o)
+CHECK_OBJ = $(addprefix $(OBJ_DIR),$(CHECK_OBJ_NAME))
 
-SRCS_2 = push_swap.c
+PUSH_SRC_NAME = push_swap.c stack_creator.c quick_sort.c commands.c\
+commands_2.c printer.c comb.c comb_2.c divide_stacks.c helpers.c\
+push_back.c swap_elements.c swappers.c error_check.c printer_helper.c
 
-SRCS = stack_creator.c quick_sort.c commands.c commands_2.c printer.c comb.c\
-	comb_2.c divide_stacks.c helpers.c push_back.c swap_elements.c swappers.c\
-	error_check.c printer_helper.c
+PUSH_OBJ_NAME = $(PUSH_SRC_NAME:.c=.o)
+PUSH_OBJ = $(addprefix $(OBJ_DIR),$(PUSH_OBJ_NAME))
 
-LIBFT = libft/
+LIB_DIR = libft/
+SRC_DIR = srcs/
+OBJ_DIR = objs/
 
-OBJECTS_1 = $(SRCS_1:.c=.o)
+all: $(CHECK_NAME) $(PUSH_NAME)
 
-OBJECTS_2 = $(SRCS_2:.c=.o)
+$(CHECK_NAME): $(CHECK_OBJ)
+	@make -C $(LIB_DIR) --silent
+	@gcc -o $(CHECK_NAME) $(CHECK_OBJ) -L $(LIB_DIR) -lft
+	@echo "##### checker compiling finished! #####"
 
-OBJECTS = $(SRCS:.c=.o)
+$(PUSH_NAME): $(PUSH_OBJ)
+	@make -C $(LIB_DIR) --silent
+	@gcc -o $(PUSH_NAME) $(PUSH_OBJ) -L $(LIB_DIR) -lft
+	@echo "##### push_swap compiling finished! #####"
 
-FLAGS = -Wall -Werror -Wextra
-
-CC = gcc
-
-all: $(NAME_1) $(NAME_2)
-
-$(NAME_1): $(OBJECTS) $(OBJECTS_1)
-	@echo "Creating .o files. Please wait..."
-	@make -C $(LIBFT)
-	@$(CC) $(FLAGS) -o $(NAME_1) $(OBJECTS) $(OBJECTS_1)  -L $(LIBFT) -lftprintf
-	@echo "All .o files successfully created."
-	@echo "Executable successfully created."
-
-$(NAME_2): $(OBJECTS_2)
-	@echo "Creating .o files. Please wait..."
-	@make -C $(LIBFT)
-	@$(CC) $(FLAGS) -o $(NAME_2) $(OBJECTS) $(OBJECTS_2)  -L $(LIBFT) -lftprintf
-	@echo "All .o files successfully created."
-	@echo "Executable successfully created."
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@echo "##### Creating" [ $@ ] " #####"
+	@gcc $(FLAGS) -o $@ -c $< $(INC)
 
 clean:
-	@echo "Deleting all .o files. Please wait..."
-	@rm -f $(OBJECTS) $(OBJECTS_1) $(OBJECTS_2)
-	@make clean -C $(LIBFT)
-	@echo "All .o files deleted."	
+	@make -C $(LIB_DIR) clean  --silent
+	@rm -f $(CHECK_OBJ) $(PUSH_OBJ)
+	@echo "##### Removed object files #####"
 
 fclean: clean
-	@echo "Deleting all .o files and executable. Please wait..."
-	@rm -f $(NAME_1)
-	@rm -f $(NAME_2)
-	@make fclean -C $(LIBFT)
-	@echo "All .o files and executable deleted."	
+	@make -C $(LIB_DIR) fclean  --silent
+	@rm -f $(CHECK_NAME) $(PUSH_NAME)
+	@echo "##### Removed binary files #####"
 
 re: fclean all
 
-.PHONY: re all clean fclean
+.PHONY: all clean fclean re
+
