@@ -41,7 +41,7 @@ any duplicates. <br>
 | <b>rrb</b>    | reverse rotate b - shift down all elements of stack b by 1. The flast element becomes the first one. |
 | <b>rrr</b>    | rra and rrb at the same time. |
 
-### Example
+### Sorting example
 
 ```
 -------------------------------------------------------------------------------------------------------
